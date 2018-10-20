@@ -12,7 +12,9 @@ double outlink (Graph g, int x);
 double w_in(Graph g, int u, int v);
 double w_out(Graph g, int u, int v);
 double calculate_diff(int n, double PR[], double prevPR[]);
-void quickSort(double **x, int n);
+void swap(double x[][2], int m, int n);
+int partition(double x[][2], int l, int h);
+void quickSort(double x[][2], int l, int h);
 
 int main(int argc, char const *argv[]) {
   if (argc < 4) {
@@ -50,11 +52,15 @@ int main(int argc, char const *argv[]) {
     result[i][0] = PR[i];
     result[i][1] = g->URL[i]->ID;
   }
-
   quickSort(result, 0, n - 1);
 
   FILE *f = fopen("pagerankList.txt", "w");
-
+    for (i = n - 1; i > -1; i--) {
+      fprintf(f, "url%.0lf, ", result[i][1]);
+      double outDegrees = outlink(g, findIndex(g, result[i][1]));
+      if (outDegrees == 0.5) outDegrees = 0;
+      fprintf(f, "%.0lf, %.7lf\n", outDegrees, result[i][0]);
+    }
   fclose(f);
   return 0;
 }
@@ -134,27 +140,35 @@ double calculate_diff(int n, double PR[], double prevPR[]) {
   return diff;
 }
 
-void quickSort(double **x, int l, int h) {
+void swap(double x[][2], int m, int n) {
+  double tmp[2];
+  tmp[0] = x[n][0];
+  tmp[1] = x[n][1];
+  x[n][0] = x[m][0];
+  x[n][1] = x[m][1];
+  x[m][0] = tmp[0];
+  x[m][1] = tmp[1];
+}
+
+int partition(double x[][2], int l, int h) {
+  double threshold = x[l][0];
+  int i = l + 1;
+  int j = h;
+
+  while (1) {
+    while (x[i][0] < threshold && i <= j) i++;
+    while (x[j][0] > threshold && i < j) j--;
+    if (i >= j) break;
+    swap(x, i, j);
+  }
+
+  swap(x, l, i - 1);
+  return i - 1;
+}
+
+void quickSort(double x[][2], int l, int h) {
   if (l >= h) return;
   int pivot = partition(x, l, h);
   quickSort(x, l, pivot - 1);
   quickSort(x, pivot + 1, h);
-}
-
-int partition(double **x, l, h) {
-  double threshold = x[h][0];
-  int i = l;
-  int j = h - 1;
-
-  while (1) {
-    while (x[i][0] < threshold && i < j) i++;
-    while (x[j][0] > threshold) && i < j) j--
-    if (i >= j) {
-      break;
-    } else swap(x, i, j);
-  }
-
-  swap(x, h, i);
-
-  return ;
 }
