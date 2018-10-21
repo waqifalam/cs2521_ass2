@@ -94,9 +94,24 @@ static void showBSTNode(BSTNode t) {
     for (curr = t->head; curr != NULL; curr = curr->next) printf("%d ", curr->urlID);
     printf("\n");
 }
+
 void showBSTree(BSTree t) {
     if (t == NULL) return;
     showBSTree(t->left);
     showBSTNode(t);
     showBSTree(t->right);
+}
+
+static void outputBSTNode(BSTNode t, FILE *f) {
+    fprintf(f, "%s  ", t->word);
+    urlList curr = NULL;
+    for (curr = t->head; curr != NULL; curr = curr->next) fprintf(f, "url%d ", curr->urlID);
+    fprintf(f, "\n");
+}
+
+void outputBSTree(BSTree t, FILE *f) {
+    if (t == NULL) return;
+    outputBSTree(t->left, f);
+    outputBSTNode(t, f);
+    outputBSTree(t->right, f);
 }
