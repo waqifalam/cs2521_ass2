@@ -30,8 +30,10 @@ int main(int argc, char const *argv[]) {
         fclose(g);
     }
 
-    showBSTree(t); // Will update later
     fclose(f);
+    FILE *output = fopen("invertedIndex.txt", "w");
+    outputBSTree(t, output);
+    fclose(output);
     return 0;
 }
 
