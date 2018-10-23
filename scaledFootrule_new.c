@@ -21,6 +21,7 @@ LList newLList(void);
 void appendList(LList list, int urlID);
 void showList(LList list);
 int NodeinList(LList list, int urlID);
+int calculate_union_size(LList url[], int uniqueURL[], int nList, int maxSize);
 
 int main(int argc, char const *argv[]) {
 	// Handle error
@@ -43,29 +44,27 @@ int main(int argc, char const *argv[]) {
 	}
 
 	int maxSize = 0;
-	for (int i = 0; i < argc - 1; i++) {
-		maxSize = maxSize + url[i]->size;
-	}
+	for (int i = 0; i < argc - 1; i++) maxSize = maxSize + url[i]->size;
 
-	int union_size = calculate_union_size(url, argc - 1, maxSize);
-
-    permutation(str, 0, size - 1, size);
+    int uniqueURL[maxSize];
+	int union_size = calculate_union_size(url, uniqueURL, argc - 1, maxSize);
+    int position[union_size];
+    for (int i = 0; i < union_size; i++) position[i] = i + 1;
+    permutation(position, 0, union_size - 1, union_size);
 
     return 0;
 }
 
 void permutation(int *str, int start, int end, int size)
 {
-	int count;
 	if (start == end) {
-		int i = 0;
-		for (i = 0; i < size; i++) printf("%d", str[i]);
+		for (int i = 0; i < size; i++) printf("%d", str[i]);
     	printf("\n");
 	} else {
-		for (count = start; count <= end; count++) {
+		for (int count = start; count <= end; count++) {
     		swap(str, start, count);
-          	permutation(str, start+1, end, size);
-          	swap(str,start,count);
+          	permutation(str, start + 1, end, size);
+          	swap(str, start, count);
       	}
   	}
 }
@@ -123,10 +122,9 @@ int NodeinList(LList list, int urlID) {
 	return 0;
 }
 
-int calculate_union_size (url, nList, maxSize) {
+int calculate_union_size(LList url[], int uniqueURL[], int nList, int maxSize) {
 	int x = 0;
 	int repeat = 0;
-	int uniqueURL[maxSize];
 	for (int i = 0; i < nList; i++) {
 		for (Node curr = url[i]->head; curr != NULL; curr = curr->next) {
 			for (int j = 0; j < x; j++) {
