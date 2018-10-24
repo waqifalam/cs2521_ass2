@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 typedef struct NodeRep *Node;
 struct NodeRep {
@@ -12,9 +13,9 @@ typedef struct LListRep *LList;
 struct LListRep {
 	int size;
 	Node head;
-}
+};
 
-void permutation(int *a, int start, int end, int size);
+void permutation(int *str, int start, int end, int size, int uniqueURL[], LList url[], int nList);
 void swap(int* str, int start, int end);
 Node newNode(int urlID);
 LList newLList(void);
@@ -35,7 +36,7 @@ int main(int argc, char const *argv[]) {
 
 	for (int i = 1; i < argc; i++) {
 		FILE *f = fopen(argv[i], "r");
-		url[i - 1] = newList();
+		url[i - 1] = newLList();
 		while (fscanf(f, "%s", buffer) == 1) {
 			int urlID = atoi(&buffer[3]);
 			appendList(url[i - 1], urlID);
@@ -46,24 +47,33 @@ int main(int argc, char const *argv[]) {
 	int maxSize = 0;
 	for (int i = 0; i < argc - 1; i++) maxSize = maxSize + url[i]->size;
 
-    int uniqueURL[maxSize];
+  int uniqueURL[maxSize];
 	int union_size = calculate_union_size(url, uniqueURL, argc - 1, maxSize);
-    int position[union_size];
+  int position[union_size];
     for (int i = 0; i < union_size; i++) position[i] = i + 1;
-    permutation(position, 0, union_size - 1, union_size);
+    permutation(position, 0, union_size - 1, union_size, uniqueURL, url, argc - 1);
 
     return 0;
 }
 
-void permutation(int *str, int start, int end, int size)
+void permutation(int *str, int start, int end, int size, int uniqueURL[], LList url[], int nList);
 {
 	if (start == end) {
 		for (int i = 0; i < size; i++) printf("%d", str[i]);
-    	printf("\n");
+    printf("\n");
+
+    double weight = 0;
+    for (int i = 0; i < nList; i++) {
+      double j = 0;
+      for (Node curr = url[i]->head; curr != NULL; curr = curr->next) {
+        weight = weight + fabs(j / url[i]->size - findIndex(curr));
+        j++
+      }
+    }
 	} else {
 		for (int count = start; count <= end; count++) {
     		swap(str, start, count);
-          	permutation(str, start + 1, end, size);
+          	permutation(str, start + 1, end, size, uniqueURL, url, nList);
           	swap(str, start, count);
       	}
   	}
@@ -86,7 +96,7 @@ Node newNode(int urlID) {
     return new;
 }
 
-LList newList(void) {
+LList newLList(void) {
 	LList new = malloc(sizeof(struct LListRep));
 	new->size = 0;
 	new->head = NULL;
@@ -124,7 +134,7 @@ int NodeinList(LList list, int urlID) {
 
 int calculate_union_size(LList url[], int uniqueURL[], int nList, int maxSize) {
 	int x = 0;
-	int repeat = 0;
+	int repeat_found = 0;
 	for (int i = 0; i < nList; i++) {
 		for (Node curr = url[i]->head; curr != NULL; curr = curr->next) {
 			for (int j = 0; j < x; j++) {
