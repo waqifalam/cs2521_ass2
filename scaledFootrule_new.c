@@ -57,6 +57,10 @@ int main(int argc, char const *argv[])
 
     int uniqueURL[maxSize];
 	int union_size = calculate_union_size(url, uniqueURL, argc - 1, maxSize);
+	if (union_size == 0){
+		fprintf(stderr, "No URLs in the file\n");
+		return EXIT_FAILURE;
+	}
     int position[union_size];
     for (int i = 0; i < union_size; i++) position[i] = i + 1;
     int min_perm[union_size];
