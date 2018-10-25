@@ -24,6 +24,7 @@ LList newLList(void);
 void appendList(LList list, int urlID);
 void showList(LList list);
 int NodeinList(LList list, int urlID);
+void freeList(LList list);
 int calculate_union_size(LList url[], int uniqueURL[], int nList, int maxSize);
 int findIndex(int uniqueURL[], int urlID, int size);
 void strcopy(int dest[], int src[], int size);
@@ -57,10 +58,6 @@ int main(int argc, char const *argv[])
 
     int uniqueURL[maxSize];
 	int union_size = calculate_union_size(url, uniqueURL, argc - 1, maxSize);
-	if (union_size == 0){
-		fprintf(stderr, "No URLs in the file\n");
-		return EXIT_FAILURE;
-	}
     int position[union_size];
     for (int i = 0; i < union_size; i++) position[i] = i + 1;
     int min_perm[union_size];
@@ -74,7 +71,9 @@ int main(int argc, char const *argv[])
         while (min_perm[j] != i + 1) j++;
         printf("url%d\n", uniqueURL[j]);
     }
-    
+
+    for (int i = 0; i < argc - 1; i++) freeList(url[i]);
+    free(minDist);
     return 0;
 }
 
@@ -148,6 +147,18 @@ int NodeinList(LList list, int urlID)
 		if (curr->urlID == urlID) return 1;
 	}
 	return 0;
+}
+
+void freeList(LList list) {
+    if (list->size != 0) {
+        Node curr = list->head;
+        for (Node tmp = curr->next; tmp != NULL; tmp = tmp->next) {
+            free(curr);
+            curr = tmp;
+        }
+        free(curr);
+    }
+    free(list);
 }
 
 int calculate_union_size(LList url[], int uniqueURL[], int nList, int maxSize)
