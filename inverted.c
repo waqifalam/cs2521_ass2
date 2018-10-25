@@ -11,7 +11,6 @@ void NormaliseString(char *s);
 int main(int argc, char const *argv[]) {
     char buffer[256];
     char url_buffer[256];
-    int x = 0;
     FILE *f = fopen("collection.txt", "r");
     BSTree t = newBSTree();
 
@@ -34,23 +33,22 @@ int main(int argc, char const *argv[]) {
     FILE *output = fopen("invertedIndex.txt", "w");
     outputBSTree(t, output);
     fclose(output);
+    freeBSTree(t);
     return 0;
 }
 
 void convertLowerCase(char *s) {
     int n = strlen(s);
-    int i = 0;
 
-    for (i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) {
         if ('A' <= s[i] && s[i] <= 'Z') s[i] = s[i] - 'A' + 'a';
     }
 }
 
 void NormaliseString(char *s) {
     int n = strlen(s);
-    int i = 0;
 
-    for (i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) {
         if (s[i] < 'a' || s[i] > 'z') {
             s[i] = '\0';
             return;
