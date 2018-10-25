@@ -10,6 +10,7 @@
 
 static int AlphabeticalOrder(char *x, char *y);
 static void appendList(BSTree t, int urlID);
+static void freeurlList(urlList head);
 
 static urlList newurlList(int urlID) {
     urlList new = malloc(sizeof(struct ListNodeRep));
@@ -21,8 +22,7 @@ static urlList newurlList(int urlID) {
 static BSTNode newBSTNode(char *c, int urlID) {
     BSTNode new = malloc(sizeof(struct BSTNodeRep));
     new->left = new->right = NULL;
-    new->word = malloc(strlen(c) * sizeof(char));
-    new->word[0] = '\0';
+    new->word = malloc((strlen(c) + 1) * sizeof(char));
     strcpy(new->word, c);
     new->head = newurlList(urlID);
     return new;
@@ -104,8 +104,7 @@ void showBSTree(BSTree t) {
 
 static void outputBSTNode(BSTNode t, FILE *f) {
     fprintf(f, "%s  ", t->word);
-    urlList curr = NULL;
-    for (curr = t->head; curr != NULL; curr = curr->next) fprintf(f, "url%d ", curr->urlID);
+    for (urlList curr = t->head; curr != NULL; curr = curr->next) fprintf(f, "url%d ", curr->urlID);
     fprintf(f, "\n");
 }
 
@@ -114,4 +113,23 @@ void outputBSTree(BSTree t, FILE *f) {
     outputBSTree(t->left, f);
     outputBSTNode(t, f);
     outputBSTree(t->right, f);
+}
+
+void freeBSTree(BSTree t) {
+    if (t == NULL) return;
+    freeBSTree(t->left);
+    freeBSTree(t->right);
+    free(t->word);
+    freeurlList(t->head);
+    free(t);
+}
+
+static void freeurlList(urlList head) {
+    if (head == NULL) return;
+    urlList curr = head;
+    for (urlList tmp = curr->next; tmp != NULL; tmp = tmp->next) {
+        free(curr);
+        curr = tmp;
+    }
+    free(curr);
 }
