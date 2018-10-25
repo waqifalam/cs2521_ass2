@@ -21,5 +21,6 @@ int findIndex(Graph g, int URL_ID);
 Graph newGraph(void);
 void addEdges(Graph g, int URL);
 void showGraph(Graph g);
+void freeGraph(Graph g);
 
 #endif
