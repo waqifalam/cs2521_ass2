@@ -69,7 +69,7 @@ static int ParallelEdge(Vertex curr, int URL_ID) {
 }
 
 void addEdges(Graph g, int URL) {
-  char buffer[256] = "URL";
+  char buffer[256] = "url";
   sprintf(&buffer[3], "%d.txt", URL);   // x[3] is null character... so append at NULL
   FILE *f = fopen(buffer, "r");
   while (fscanf(f, "%s", buffer) && strcmp("Section-1", buffer) != 0);
@@ -93,10 +93,22 @@ void showGraph(Graph g) {
   int i = 0;
   for (i = 0; i < g->nV; i++) {
     printf("Outbound links for %d: ", g->URL[i]->ID);
-    Vertex curr = NULL;
     for (Vertex curr = g->URL[i]->next; curr != NULL; curr = curr->next) {
       printf("%d ", curr->ID);
     }
     printf("\n");
   }
+}
+
+void freeGraph(Graph g) {
+    for (int i = 0; i < g->nV; i++) {
+        Vertex curr = g->URL[i];
+        for (Vertex tmp = curr->next; tmp != NULL; tmp = tmp->next) {
+            free(curr);
+            curr = tmp;
+        }
+        free(curr);
+    }
+    free(g->URL);
+    free(g);
 }
