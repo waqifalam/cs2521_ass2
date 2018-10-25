@@ -28,10 +28,11 @@ int main(int argc, char const *argv[]) {
 
     for (int i = 1; i < argc; i++) {
         while (fscanf(urlStream, "%s", textbuffer) == 1 && strcmp(argv[i], textbuffer) != 0);
-        if (strcmp(argv[i], textbuffer) != 0) continue;
+        if (strcmp(argv[i], textbuffer) != 0) continue; // argv[i] not found
 
         while (fscanf(urlStream, "%s", textbuffer) == 1 && strstr(textbuffer, "url") != NULL) {
             if (textbuffer[3] < '0' || textbuffer[3] > '9') break;
+            // case where search query contains the name url but not an address
             urlID = atoi(&textbuffer[3]);
             head = appendList(head, urlID);
         }
