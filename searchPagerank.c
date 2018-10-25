@@ -14,6 +14,7 @@ Node appendList(Node head, int urlID);
 void showList(Node head);
 int nNodes(Node head);
 int NodeinList(Node node, int urlID);
+void freeList(Node head);
 
 int main(int argc, char const *argv[]) {
     if (argc < 2) {
@@ -25,8 +26,9 @@ int main(int argc, char const *argv[]) {
     FILE *urlStream = fopen("invertedIndex.txt", "r");
     Node head = newList();
 
-    for (size_t i = 1; i < argc; i++) {
-        while (fscanf(urlStream, "%s", textbuffer) && strcmp(argv[i], textbuffer) != 0);
+    for (int i = 1; i < argc; i++) {
+        while (fscanf(urlStream, "%s", textbuffer) == 1 && strcmp(argv[i], textbuffer) != 0);
+        if (strcmp(argv[i], textbuffer) != 0) continue;
 
         while (fscanf(urlStream, "%s", textbuffer) == 1 && strstr(textbuffer, "url") != NULL) {
             if (textbuffer[3] < '0' || textbuffer[3] > '9') break;
@@ -37,10 +39,10 @@ int main(int argc, char const *argv[]) {
     }
 
     fclose(urlStream);
-    FILE *rankSteam = fopen("pagerankList.txt", "r");
+    FILE *rankStream = fopen("pagerankList.txt", "r");
     int nDisplayed = 0;
 
-    while (fgets(textbuffer, 1024, rankSteam) != NULL && nDisplayed < 30) {
+    while (fgets(textbuffer, 1024, rankStream) != NULL && nDisplayed < 30) {
         urlID = atoi(&textbuffer[3]);
         if (NodeinList(head, urlID)) {
             printf("url%d\n", urlID);
@@ -48,7 +50,8 @@ int main(int argc, char const *argv[]) {
         }
     }
 
-    fclose(rankSteam);
+    fclose(rankStream);
+    freeList(head);
     return 0;
 }
 
@@ -91,4 +94,10 @@ int NodeinList(Node node, int urlID) {
     if (node == NULL) return 0;
     if (node->urlID == urlID) return 1;
     return NodeinList(node->next, urlID);
+}
+
+void freeList(Node head) {
+    if (head == NULL) return;
+    freeList(head->next);
+    free(head);
 }
