@@ -74,9 +74,7 @@ double calculate_PR(Graph g, int x, double prevPR[]){
     for (Vertex curr = g->URL[i]->next; curr != NULL; curr = curr->next) {
       if (curr->ID == g->URL[x]->ID) {
         result = result + prevPR[i] * w_in(g, i, x) * w_out(g, i, x);
-        // printf("Win[%d][%d] %lf , ",i ,x, w_in(g, i, x));
-        // printf("Wout[%d][%d] %lf\n",i ,x, w_out(g, i, x));
-        break;
+        break; // finished calculation -> break from inner loop
       }
     }
   }
@@ -93,7 +91,7 @@ int inlink(Graph g, int x) {
     for (curr = g->URL[i]->next; curr != NULL; curr = curr->next) {
       if (curr->ID == g->URL[x]->ID) {
         result++;
-        break;
+        break; // finished calculation -> break from inner loop
       }
     }
   }
@@ -134,9 +132,8 @@ double w_out(Graph g, int v, int u) {
 }
 
 double calculate_diff(int n, double PR[], double prevPR[]) {
-  int i = 0;
   double diff = 0;
-  for (i = 0; i < n; i++) diff = diff + fabs(PR[i] - prevPR[i]);
+  for (int i = 0; i < n; i++) diff = diff + fabs(PR[i] - prevPR[i]);
   return diff;
 }
 
@@ -157,12 +154,16 @@ int partition(double x[][2], int l, int h) {
 
   while (1) {
     while (x[i][0] < threshold && i <= j) i++;
+    // i <= j in this case as bottom loop may not have verified
+    // last element is higher than threshold.
+    // Thus we check all elements up to j in first loop.
     while (x[j][0] > threshold && i < j) j--;
     if (i >= j) break;
     swap(x, i, j);
   }
 
   swap(x, l, i - 1);
+  // sort pivot by swapping pivot with last element below threshold
   return i - 1;
 }
 
