@@ -53,7 +53,7 @@ int main(int argc, char const *argv[])
 		fclose(f);
 	}
 
-	int maxSize = 0;
+	int maxSize = 0; // max no. of unique URLs
 	for (int i = 0; i < argc - 1; i++) maxSize = maxSize + url[i]->size;
 
     int uniqueURL[maxSize];
@@ -75,6 +75,8 @@ int main(int argc, char const *argv[])
     for (int  i = 0; i < union_size; i++) {
         int j = 0;
         while (min_perm[j] != i + 1) j++;
+	// The while loop finds the index of the URL with pos i + 1, where pos
+	// range is 1 <= pos <= union_size
         printf("url%d\n", uniqueURL[j]);
     }
 
@@ -207,6 +209,8 @@ int *permutation, int size, int uniqueURL[], LList url[], int nList, int min_per
         double LList_pos = 1;
         for (Node curr = url[i]->head; curr != NULL; curr = curr->next) {
             weight = weight + fabs(LList_pos / url[i]->size - permutation[findIndex(uniqueURL, curr->urlID, size)] / (double) size);
+	    // Permutation function assigns values to the indexes of permutation. This acts as the different positions for 
+	    // uniqueURLs.
             LList_pos++;
         }
     }
