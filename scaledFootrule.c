@@ -26,7 +26,7 @@ void showList(LList list);
 int NodeinList(LList list, int urlID);
 void freeList(LList list);
 int calculate_union_size(LList url[], int uniqueURL[], int nList, int maxSize);
-int findIndex(int uniqueURL[], int urlID, int size);
+int find_Index(int uniqueURL[], int urlID, int size);
 void strcopy(int dest[], int src[], int size);
 
 void calculate_distance(
@@ -190,7 +190,7 @@ int calculate_union_size(LList url[], int uniqueURL[], int nList, int maxSize)
 	return x;
 }
 
-int findIndex(int uniqueURL[], int urlID, int size)
+int find_Index(int uniqueURL[], int urlID, int size)
 {
     for (int i = 0; i < size; i++) {
         if (urlID == uniqueURL[i]) return i;
@@ -212,7 +212,7 @@ int *permutation, int size, int uniqueURL[], LList url[], int nList, int min_per
     for (int i = 0; i < nList; i++) {
         double LList_pos = 1;
         for (Node curr = url[i]->head; curr != NULL; curr = curr->next) {
-            weight = weight + fabs(LList_pos / url[i]->size - permutation[findIndex(uniqueURL, curr->urlID, size)] / (double) size);
+            weight = weight + fabs(LList_pos / url[i]->size - permutation[find_Index(uniqueURL, curr->urlID, size)] / (double) size);
 	    // Permutation function assigns values to the indexes of permutation. This acts as the different positions for 
 	    // uniqueURLs.
             LList_pos++;
