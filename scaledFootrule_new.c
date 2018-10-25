@@ -88,9 +88,12 @@ int main(int argc, char const *argv[])
 void permutation(
 int *str, int start, int end, int size, int uniqueURL[], LList url[], int nList, int min_perm[], double *minDist)
 {
+	// When last index is reached and permuting is over
 	if (start == end) {
         calculate_distance(str, size, uniqueURL, url, nList, min_perm, minDist);
 	} else {
+		// loop through every index
+		// permute every index by recursion
 		for (int count = start; count <= end; count++) {
     		swap(str, start, count);
           	permutation(str, start + 1, end, size, uniqueURL, url, nList, min_perm, minDist);
@@ -101,6 +104,7 @@ int *str, int start, int end, int size, int uniqueURL[], LList url[], int nList,
 
 void swap(int* str, int start, int end)
 {
+	// swap index start and end with each other in the str
 	int *a = str + start;
 	int *b = str + end;
     int temp;
