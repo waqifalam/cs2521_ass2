@@ -21,6 +21,7 @@ BSTree newBSTree(void);
 BSTree addBSTNode(BSTree t, char *c, int urlID);
 void showBSTree(BSTree t);
 void outputBSTree(BSTree t, FILE *f);
+void freeBSTree(BSTree t);
 
 #endif
 
