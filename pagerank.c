@@ -41,7 +41,6 @@ int main(int argc, char const *argv[]) {
     for (j = 0; j < n; j++) prevPR[j] = PR[j];
     for (j = 0; j < n; j++) {
       PR[j] = (1.0 - d) / n + d * calculate_PR(g, j, prevPR);
-      // printf("prev[%d] = %lf , curr[%d] = %lf\n", j, prevPR[j], j, PR[j]);
     }
     diff = calculate_diff(n, PR, prevPR);
     i++;
@@ -55,13 +54,14 @@ int main(int argc, char const *argv[]) {
   quickSort(result, 0, n - 1);
 
   FILE *f = fopen("pagerankList.txt", "w");
-    for (i = n - 1; i > -1; i--) {
+  for (i = n - 1; i > -1; i--) {
       fprintf(f, "url%.0lf, ", result[i][1]);
       double outDegrees = outlink(g, findIndex(g, result[i][1]));
       if (outDegrees == 0.5) outDegrees = 0;
       fprintf(f, "%.0lf, %.7lf\n", outDegrees, result[i][0]);
-    }
+  }
   fclose(f);
+  freeGraph(g);
   return 0;
 }
 
